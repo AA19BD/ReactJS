@@ -1,0 +1,22 @@
+.tweet {
+  border-radius: 30px;
+  height: 300px;
+  width: 300px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: lightblue;
+}
+
+.red {
+  color: red;
+  font-size: 50px;
+}
