@@ -1,0 +1,7 @@
+.nav {
+  display: flex;
+  align-items: center; /* horizontal */
+  justify-content: space-around; /* vertical */
+  background-color: rgb(148, 148, 148);
+  color: white;
+}
