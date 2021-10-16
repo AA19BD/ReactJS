@@ -6,7 +6,7 @@ function Timer({seconds,active,setSeconds,setActive}){
         setSeconds(0)
         setActive(false)
     }
-    useEffect(()=>{ //!!То есть при каждом обновлении страницы или при каждом re-render какого либо объекта срабатывает useEffect()
+    useEffect(()=>{
         let interval=null
         if(active){
           interval=setInterval(()=>{setSeconds(seconds+1)},1000)
