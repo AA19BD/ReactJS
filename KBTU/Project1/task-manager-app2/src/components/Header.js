@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types'
 import React from 'react';
+import {useLocation} from "react-router-dom"
 
 const Header = ({title,setShow,show}) => {
+    const location = useLocation();
     return (
         <header className="header">
             <h1 >{title}</h1>
-            <button className="btn" onClick={()=>setShow((prev)=>!prev)} >{show ? "Close" : "Show"}</button>
+            {location.pathname==="/" && 
+            <button className="btn" 
+            onClick={()=>setShow((prev)=>!prev)} 
+            >{show ? "Close" : "Show"}
+            </button>}
         </header>
     ) 
 };

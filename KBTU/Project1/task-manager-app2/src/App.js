@@ -1,92 +1,104 @@
 import React, { useState, useEffect } from "react";
+import {BrowserRouter as Router,Route} from "react-router-dom"
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
+import Footer from "./components/Footer";
+import About from "./components/About";
 import "./App.css";
 
 function App() {
-  const [status, setStatus] = useState("all");
-  const [filteredTasks, setFilteredTasks] = useState([]);
   const [show, setShow] = useState(true);
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    fetchTasks();
+    const getTasks=async() =>{
+      const tasksFromServer=await fetchTasks() 
+      setTasks(tasksFromServer)
+    }
+    getTasks()
   }, []);
+
   //Fetch Tasks
   const fetchTasks = async () => {
     const res = await fetch("http://localhost:5000/tasks");
     const data = await res.json();
     return data;
   };
-  //RUN ONCE WHEN THE APP START
-  useEffect(() => {
-    getLocalTodos();
-  }, []);
-  //USE EFFECT
-  useEffect(() => {
-    filterHandler();
-    saveLocalTodos();
-  }, [tasks, status]);
-  //Functions
-  const filterHandler = () => {
-    switch (status) {
-      case "completed":
-        setFilteredTasks(tasks.filter((task) => task.completed === true));
-        break;
-      case "uncompleted":
-        setFilteredTasks(tasks.filter((task) => task.completed === false));
-        break;
-      default:
-        setFilteredTasks(tasks);
-        break;
-    }
+
+  //Fetch Task
+  const fetchTask = async (id) => {
+    const res = await fetch(`http://localhost:5000/tasks/${id}`);
+    const data = await res.json();
+    return data; 
   };
-  //Save to Local Storage
-  const saveLocalTodos = () => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  };
-  const getLocalTodos = () => {
-    if (localStorage.getItem("tasks") === null) {
-      localStorage.setItem("tasks", JSON.stringify([])); //if its empty
-    } else {
-      let tasksLocal = JSON.parse(localStorage.getItem("tasks"));
-      setTasks(tasksLocal);
-    }
+ 
+  //Add Task
+  const addTask = async (task) => {
+    const res= await fetch("http://localhost:5000/tasks",{
+      method: "POST",
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify(task) 
+    })
+    const data=await res.json();
+    setTasks([...tasks,data])
+    // const id = Math.floor(Math.random() * 10000) + 1;
+    // const newTask = { id, ...task };
+    // setTasks([...tasks, newTask]);
   };
 
   //Delete Task
-  const deleteTask = (id) => {
+  const deleteTask = async (id) => {
+    await fetch(`http://localhost:5000/tasks/${id}`,{
+      method:'DELETE'
+    })
     setTasks(tasks.filter((t) => t.id !== id));
   };
+
   //Toggle reminder
-  const toggleCompleted = (id) => {
+  const toggleCompleted = async(id) => {
+    const taskToToggle=await fetchTask(id)
+    const updTask={...taskToToggle,completed:!taskToToggle.completed}
+
+    const res = await fetch(`http://localhost:5000/tasks/${id}`,{
+      method:'PUT', 
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify(updTask) 
+    })
+    const data=await res.json();
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
+        task.id === id ? { ...task, completed: data.completed } : task
       )
     );
   };
-  //Add Task
-  const addTask = (task) => {
-    const id = Math.floor(Math.random() * 10000) + 1;
-    const newTask = { id, ...task };
-    setTasks([...tasks, newTask]);
-  };
+  
   return (
+    <Router>
     <div className="container">
       <Header setShow={setShow} show={show} />
-      {show ? <AddTask onAdd={addTask} setStatus={setStatus} /> : ""}
-      {tasks.length > 0 ? (
+      <Route path="/" exact render={(props)=>(
+        <>
+          {show ? <AddTask onAdd={addTask} /> : ""}
+          {tasks.length > 0 ? (
         <Tasks
-          tasks={filteredTasks}
+          tasks={tasks}
           onDelete={deleteTask}
           onToggle={toggleCompleted}
-        />
+        /> 
       ) : (
         "No Tasks!"
       )}
+        </>
+      )} />
+      <Route path="/about" component={About} />
+      <Footer/>
     </div>
+    </Router>
   );
 }
 

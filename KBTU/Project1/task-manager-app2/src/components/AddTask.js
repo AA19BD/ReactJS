@@ -13,9 +13,7 @@ const AddTask = ({onAdd,setStatus}) => {
         setDay('')
         setCompleted(false)
     }
-    const statusHandler=(e)=>{
-        setStatus(e.target.value);
-      }
+
     return (
         <form className='add-form' onSubmit={onSubmit}>
             <div className="form-control">
@@ -42,16 +40,10 @@ const AddTask = ({onAdd,setStatus}) => {
                 onChange={(e) => setCompleted(e.currentTarget.checked)}/>
             </div>
 
-            <div className="select">
                 <input type="submit" 
                 value="Add Tasks" 
                 className="btn btn-block"/>
-                <select onChange={statusHandler}>
-                <option value="all">All</option>
-                <option value="completed">Completed</option>
-                <option value="uncompleted">Uncompleted</option>
-                </select>
-            </div>
+               
         </form>
     )
 }
