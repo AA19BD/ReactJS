@@ -11,7 +11,7 @@ const Header = ({title,setShow,show}) => {
 };
 
 Header.defaultProps = {
-    title:'Task Tracker'
+    title:'Task Manager'
 }
 Header.propTypes = {
     title: PropTypes.string.isRequired
