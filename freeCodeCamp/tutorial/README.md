@@ -1,5 +1,5 @@
 
-# THE SITE->https://react-basic-tutorial2021-by-abylai.netlify.app/
+# The site->https://react-basic-tutorial2021-by-abylai.netlify.app/
 
 # Getting Started with Create React App
 
